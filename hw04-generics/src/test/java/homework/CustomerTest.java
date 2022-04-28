@@ -1,5 +1,7 @@
 package homework;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +13,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class CustomerTest {
 
     // Все тесты должны проходить, менять тесты не надо.
-
+    @AfterEach
+    @BeforeEach
     @Test
     @DisplayName("Проверяем, что класс Customer не сломан")
     void setterCustomerTest() {
