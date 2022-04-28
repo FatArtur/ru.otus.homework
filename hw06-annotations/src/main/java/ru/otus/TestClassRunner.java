@@ -1,7 +1,11 @@
 package ru.otus;
 
+import ru.otus.annotations.After;
+import ru.otus.annotations.Before;
+import ru.otus.annotations.Test;
 import ru.otus.reflection.ReflectionHelper;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -9,39 +13,36 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class TestClassRunner {
-    private static final String AFTER_ANNOTATION_NAME = "@ru.otus.annotations.After()";
-    private static final String BEFORE_ANNOTATION_NAME = "@ru.otus.annotations.Before()";
-    private static final String TEST_ANNOTATION_NAME = "@ru.otus.annotations.Test()";
 
-    public void run(Class<?> clazz){
+    public void run(Class<?> clazz) {
         AtomicInteger passedTests = new AtomicInteger();
         AtomicInteger failedTests = new AtomicInteger();
 
         Method[] methodsAll = clazz.getDeclaredMethods();
-
-        List<Method> methods = getMethods(methodsAll, TEST_ANNOTATION_NAME);
+        List<Method> methods = getMethods(methodsAll, Test.class);
         methods.forEach(m -> {
+            Object objectNew = ReflectionHelper.instantiate(clazz);
             try {
-                Object objectNew = ReflectionHelper.instantiate(clazz);
-                ReflectionHelper.callMethod(objectNew, getMethods(methodsAll, BEFORE_ANNOTATION_NAME).get(0).getName());
+                ReflectionHelper.callMethod(objectNew, getMethods(methodsAll, Before.class).get(0).getName());
                 ReflectionHelper.callMethod(objectNew, m.getName());
-                ReflectionHelper.callMethod(objectNew, getMethods(methodsAll, AFTER_ANNOTATION_NAME).get(0).getName());
                 passedTests.getAndIncrement();
-            } catch (Exception e){
+            } catch (Exception e) {
                 failedTests.getAndIncrement();
+            } finally {
+                ReflectionHelper.callMethod(objectNew, getMethods(methodsAll, After.class).get(0).getName());
             }
-        } );
+        });
 
         printResults(passedTests, failedTests);
     }
 
-    private List<Method> getMethods(Method[] methods, String annotationName){
+    private List<Method> getMethods(Method[] methods, Class<? extends Annotation> annotation) {
         return Arrays.stream(methods)
-                .filter(s-> Arrays.asList(s.getDeclaredAnnotations()).toString().contains(annotationName))
+                .filter(s -> s.isAnnotationPresent(annotation))
                 .collect(Collectors.toList());
     }
 
-    private void printResults(AtomicInteger passed, AtomicInteger failed){
+    private void printResults(AtomicInteger passed, AtomicInteger failed) {
         System.out.println("*******************");
         System.out.println("Passed tests = " + passed.get());
         System.out.println("Failed tests = " + failed.get());
