@@ -4,5 +4,7 @@ spend msec:11196, sec:11 - 1024m
 spend msec:10870, sec:10 - 1500m
 spend msec:10870, sec:10 - 1256m
 
+-Оптимальный размер 1256m
+
 после доработки
 spend msec:1465, sec:1 - 1256m
