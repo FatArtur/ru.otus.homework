@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.*;
 import ru.otus.ATM;
+import ru.otus.ATMImpl;
 import ru.otus.Cell;
 import ru.otus.Nominal;
 
@@ -8,7 +9,7 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class ATMTest {
+public class ATMImplTest {
 
     List<Cell> cells;
     ATM atm;
@@ -16,10 +17,10 @@ public class ATMTest {
     @BeforeEach
     void setUp() {
         cells = new ArrayList<>();
-        cells.add(new Cell(Nominal.N_100, 100));
-        cells.add(new Cell(Nominal.N_200, 50));
-        cells.add(new Cell(Nominal.N_500, 50));
-        atm = new ATM(cells);
+        cells.add(new Cell(Nominal.N_100.getValue(), 100));
+        cells.add(new Cell(Nominal.N_200.getValue(), 50));
+        cells.add(new Cell(Nominal.N_500.getValue(), 50));
+        atm = new ATMImpl(cells);
     }
 
     @AfterEach
@@ -40,7 +41,7 @@ public class ATMTest {
     void testMinus() {
         int balance = 52_200;
         atm.operationGetMoney(1700);
-        atm.operationAddCell(new Cell(Nominal.N_1000, 10));
+        atm.operationAddCell(new Cell(Nominal.N_1000.getValue(), 10));
         atm.operationGetMoney(1100);
 
         assertThat(atm.getBalance()).isEqualTo(balance);

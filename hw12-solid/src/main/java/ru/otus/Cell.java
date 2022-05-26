@@ -14,7 +14,11 @@ public class Cell {
     }
 
     public void putMoney(int val) {
-        this.value += val;
+        if (val > 0) {
+            this.value += val;
+        } else {
+            System.out.println("Введено не корректное количество купюр: " + val);
+        }
     }
 
     public void getMoney(int val) {
