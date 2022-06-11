@@ -130,6 +130,10 @@ public class Message {
                 '}';
     }
 
+    public Message copy() {
+        return this.toBuilder().field13(new ObjectForMessage(this.getField13())).build();
+    }
+
     public static class Builder {
         private final long id;
         private String field1;
