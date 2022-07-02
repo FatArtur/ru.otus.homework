@@ -54,12 +54,10 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T>{
     }
 
     private Constructor<T> getDefaultConstructor(Class<T> tClass) {
-        Constructor<T> constructor;
         try {
-            constructor = tClass.getConstructor();
+            return tClass.getConstructor();
         } catch (NoSuchMethodException e) {
             throw new RuntimeException("Default Constructor not found");
         }
-        return constructor;
     }
 }
