@@ -16,10 +16,10 @@ public class MyCache<K, V> implements HwCache<K, V> {
         var getValue = cache.get(key);
         if (getValue == null) {
             cache.put(key, value);
-            listenerList.forEach(lis -> lis.notify(key, value, "Put"));
+            listenerNotify(key, value, "Put");
         } else {
             cache.replace(key, value);
-            listenerList.forEach(lis -> lis.notify(key, value, "Replace"));
+            listenerNotify(key, value, "Replace");
         }
     }
 
@@ -27,7 +27,7 @@ public class MyCache<K, V> implements HwCache<K, V> {
     public void remove(K key) {
         var removeValue = cache.remove(key);
         if (removeValue != null) {
-            listenerList.forEach(lis -> lis.notify(key, removeValue, "Remove"));
+            listenerNotify(key, removeValue, "Remove");
         }
 
     }
@@ -36,7 +36,7 @@ public class MyCache<K, V> implements HwCache<K, V> {
     public V get(K key) {
         var getValue = cache.get(key);
         if (getValue != null) {
-            listenerList.forEach(lis -> lis.notify(key, getValue, "Get"));
+            listenerNotify(key, getValue, "Get");
         }
         return getValue;
     }
@@ -51,5 +51,13 @@ public class MyCache<K, V> implements HwCache<K, V> {
     public void removeListener(HwListener<K, V> listener) {
         listenerList.remove(listener);
 
+    }
+
+    private void listenerNotify(K key, V value, String action) {
+        try {
+            listenerList.forEach(lis -> lis.notify(key, value, action));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
