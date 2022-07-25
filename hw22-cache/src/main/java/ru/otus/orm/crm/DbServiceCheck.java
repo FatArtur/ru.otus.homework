@@ -3,6 +3,7 @@ package ru.otus.orm.crm;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.otus.cache.cachehw.MyCache;
 import ru.otus.orm.core.repository.DataTemplateHibernate;
 import ru.otus.orm.core.repository.HibernateUtils;
 import ru.otus.orm.core.sessionmanager.TransactionManagerHibernate;
@@ -24,6 +25,7 @@ public class DbServiceCheck {
 
     public static void main(String[] args) {
         var configuration = new Configuration().configure(HIBERNATE_CFG_FILE);
+        var cache = new MyCache<String, Client>();
 
         var dbUrl = configuration.getProperty("hibernate.connection.url");
         var dbUserName = configuration.getProperty("hibernate.connection.username");
@@ -37,7 +39,7 @@ public class DbServiceCheck {
         var clientTemplate = new DataTemplateHibernate<>(Client.class);
 
         var dbServiceClient = new DbServiceClientImpl(transactionManager, clientTemplate);
-        var dbServiceClientCache = new DbServiceClientWithCacheImpl(transactionManager, clientTemplate);
+        var dbServiceClientCache = new DbServiceClientWithCacheImpl(transactionManager, clientTemplate, cache);
 
         action(dbServiceClient);
         action(dbServiceClientCache);

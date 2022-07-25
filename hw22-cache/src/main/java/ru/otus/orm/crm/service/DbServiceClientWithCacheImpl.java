@@ -2,7 +2,7 @@ package ru.otus.orm.crm.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.cache.cachehw.MyCache;
+import ru.otus.cache.cachehw.HwCache;
 import ru.otus.orm.core.repository.DataTemplate;
 import ru.otus.orm.core.sessionmanager.TransactionManager;
 import ru.otus.orm.crm.model.Client;
@@ -15,12 +15,12 @@ public class DbServiceClientWithCacheImpl implements DBServiceClient {
 
     private final DataTemplate<Client> clientDataTemplate;
     private final TransactionManager transactionManager;
-    private final MyCache<String, Client> cache;
+    private final HwCache<String, Client> cache;
 
-    public DbServiceClientWithCacheImpl(TransactionManager transactionManager, DataTemplate<Client> clientDataTemplate) {
+    public DbServiceClientWithCacheImpl(TransactionManager transactionManager, DataTemplate<Client> clientDataTemplate, HwCache<String, Client> cache) {
         this.transactionManager = transactionManager;
         this.clientDataTemplate = clientDataTemplate;
-        this.cache = new MyCache<>();
+        this.cache = cache;
     }
 
     @Override
@@ -41,12 +41,13 @@ public class DbServiceClientWithCacheImpl implements DBServiceClient {
 
     @Override
     public Optional<Client> getClient(long id) {
+        var resultInCache = cache.get(String.valueOf(id));
+        if (resultInCache != null) {
+            return Optional.of(resultInCache);
+        }
         return transactionManager.doInReadOnlyTransaction(session -> {
-            var resultInCache = cache.get(String.valueOf(id));
-            if (resultInCache != null) {
-                return Optional.of(resultInCache);
-            }
             var clientOptional = clientDataTemplate.findById(session, id);
+            clientOptional.ifPresent(it -> cache.put(String.valueOf(id), it));
             log.info("client: {}", clientOptional);
             return clientOptional;
         });
