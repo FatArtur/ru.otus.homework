@@ -1,0 +1,50 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Клиенты</title>
+</head>
+
+<body>
+<h4>Добавить клиента</h4>
+
+<form action="clients" method="post">
+    <table style="width: 400px">
+        <tr>
+            <td style="width: 150px">Имя</td>
+            <td style="width: 100px">Адрес</td>
+            <td style="width: 100px">Телефон</td>
+        </tr>
+        <tr>
+            <td style="width: 50px"><input type="text" name="name" id = "name" value="Ivan" placeholder="Введите имя клиента"></td>
+            <td style="width: 100px"><input type="text" name="address" id = "address" value="Some Address" placeholder="Введите адрес клиента"></td>
+            <td style="width: 100px"><input type="text" name="phone" id = "phone" value="111-111" placeholder="Введите телефон клиента"></td>
+        </tr>
+    </table>
+    <br/><br/>
+    <input type="submit" value="Добавить">
+</form>
+
+<h4>Клиенты</h4>
+<table style="width: 400px">
+    <thead>
+        <tr>
+            <td style="width: 50px">Id</td>
+            <td style="width: 150px">Имя</td>
+            <td style="width: 100px">Адрес</td>
+            <td style="width: 100px">Телефон</td>
+        </tr>
+    </thead>
+    <#list allClients as client>
+        <tr>
+            <td>${client.id}</td>
+            <td>${client.name}</td>
+            <td>${client.address?if_exists}</td>
+            <td>
+                <#list client.phones as phone>
+                <div>${phone}</div>
+                </#list>
+            </td>
+        </tr>
+    </#list>
+</table>
+</body>
+</html>
