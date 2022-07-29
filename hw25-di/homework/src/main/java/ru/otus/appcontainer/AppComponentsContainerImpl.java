@@ -44,19 +44,15 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     }
 
     private void initComponent(Object instance, Method method, String componentName) {
-        Object[] parameters;
-        Class<?>[] parameterTypes = method.getParameterTypes();
-        var parameterCount = parameterTypes.length;
-        if (parameterCount == 0) {
-            parameters = new Object[0];
-        } else {
-            parameters = Arrays.stream(parameterTypes)
-                    .map(this::getAppComponent).toArray();
-        }
+        Object[] parameters = Arrays.stream(method.getParameterTypes())
+                .map(this::getAppComponent).toArray();
+
         try {
             Object component = method.invoke(instance, parameters);
-            appComponentsByName.put(componentName, component);
-            appComponents.add(component);
+            if (!appComponentsByName.containsKey(componentName)) {
+                appComponentsByName.put(componentName, component);
+                appComponents.add(component);
+            }
         } catch (Exception e) {
             throw new RuntimeException(String.format("Failed to initialize app component %s. ", componentName));
         }
@@ -66,7 +62,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     public <C> C getAppComponent(Class<C> componentClass) {
         return (C) appComponents.stream()
                 .filter(component -> componentClass.isInstance(component))
-                .findFirst()
+                .findAny()
                 .orElseThrow(() -> new RuntimeException(String.format("Can't find component for this class %s.", componentClass.getName())));
     }
 
