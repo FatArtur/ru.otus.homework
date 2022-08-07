@@ -1,7 +1,7 @@
 package ru.otus.crm.model;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Table;
 
 import javax.annotation.Nonnull;
@@ -18,7 +18,7 @@ public class Phone {
     @Nonnull
     private Long clientId;
 
-    @PersistenceConstructor
+    @PersistenceCreator
     public Phone(Long id, @Nonnull String number, Long clientId) {
         this.id = id;
         this.number = number;

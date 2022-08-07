@@ -1,8 +1,8 @@
 package ru.otus.crm.dto;
 
-import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 public class ClientDto {
 
     private String name;

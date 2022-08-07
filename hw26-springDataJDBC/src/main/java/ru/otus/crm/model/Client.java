@@ -2,7 +2,7 @@ package ru.otus.crm.model;
 
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -29,7 +29,7 @@ public class Client {
         this(null, name, null, null);
     }
 
-    @PersistenceConstructor
+    @PersistenceCreator
     public Client(Long id, @Nonnull String name, Address address, Set<Phone> phones) {
         this.id = id;
         this.name = name;
