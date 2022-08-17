@@ -36,6 +36,10 @@ allprojects {
             dependency("org.glassfish:jakarta.json:${Versions.glassfishJson}")
             dependency("org.springdoc:springdoc-openapi-ui:${Versions.springDocOpenapiUi}")
             dependency("com.google.code.findbugs:jsr305:${Versions.jsr305}")
+
+            dependency("io.grpc:grpc-netty:${Versions.grpc}")
+            dependency("io.grpc:grpc-protobuf:${Versions.grpc}")
+            dependency("io.grpc:grpc-stub:${Versions.grpc}")
         }
     }
 }
