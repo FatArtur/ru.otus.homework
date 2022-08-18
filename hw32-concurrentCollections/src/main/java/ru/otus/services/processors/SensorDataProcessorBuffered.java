@@ -33,7 +33,7 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
         dataBuffer.offer(data);
     }
 
-    public synchronized void flush() {
+    public void flush() {
         try {
             if (!dataBuffer.isEmpty()) {
                 var bufferedData = new ArrayList<SensorData>();
