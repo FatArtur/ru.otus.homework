@@ -9,8 +9,6 @@ import ru.otus.protobuf.generated.MessageRequest;
 import ru.otus.protobuf.generated.MessageResponse;
 
 
-import java.util.ArrayDeque;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -30,17 +28,14 @@ public class GRPCClient {
 
         var counter = new AtomicInteger();
         var currentValue = 0;
-        var oldValue = 0;
 
         var latch = new CountDownLatch(1);
         var newStub = RemoteServiceGrpc.newStub(channel);
         newStub.sendMessage(MessageRequest.newBuilder().setFirst(0).setLast(30).build(), new StreamObserver<MessageResponse>() {
             @Override
             public void onNext(MessageResponse response) {
-                synchronized (lock) {
-                    counter.set(response.getVal());
-                    log.info("new value:{}", response.getVal());
-                }
+                counter.set(response.getVal());
+                log.info("new value:{}", response.getVal());
             }
 
             @Override
@@ -56,13 +51,9 @@ public class GRPCClient {
         });
 
         for (int i = 0; i < 50; i++) {
-            synchronized (lock) {
-                var serverVal = counter.get();
-                var result = oldValue == serverVal ? 0 : serverVal;
-                oldValue = serverVal;
-                currentValue += result + 1;
-                log.info("currentValue:{}", currentValue);
-            }
+            var serverVal = counter.getAndSet(0);
+            currentValue += serverVal + 1;
+            log.info("currentValue:{}", currentValue);
             sleep();
         }
 
